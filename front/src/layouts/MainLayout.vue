@@ -8,7 +8,7 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="leftDrawerOpen=!leftDrawerOpen" 
         />
 
         <q-toolbar-title>
@@ -31,11 +31,7 @@
           Essential Links
         </q-item-label>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+
       </q-list>
     </q-drawer>
 
@@ -73,7 +69,7 @@ export default defineComponent({
         this.$q.loading.show()
         this.$api.post('logout').then(() => {
           globalStore().user = {}
-          localStorage.removeItem('tokenDiesd')
+          localStorage.removeItem('tokenCapacho')
           globalStore().isLoggedIn = false
           this.$router.push('/login')
           this.$q.loading.hide()
@@ -84,8 +80,6 @@ export default defineComponent({
     
     },
 
-    toggleLeftDrawer () {
-      this.leftDrawerOpen = !this.leftDrawerOpen
-    }
+
   });
 </script>

@@ -35,6 +35,7 @@ class ServicioController extends Controller
     public function store(StoreServicioRequest $request)
     {
         //
+  
         
     }
 

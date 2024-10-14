@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
 {
@@ -94,6 +95,7 @@ class UserController extends Controller
         $user = User::where('name',$request->name)->whereDate('fechalimite','>=',date('Y-m-d'))->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
+                $user->tokens()->delete();
                 $user = User::where('name',$request->name)->first();
                 $token = $user->createToken('authToken')->plainTextToken;
                 return response(['user' => $user, 'token' => $token]);
@@ -105,10 +107,13 @@ class UserController extends Controller
         }
     }
 
-    public function me(Request $request)
+    public function me($tokenString)
     {
-        $user=User::where('id',$request->user()->id)
-                    ->where('state','ACTIVO')
+        $token = PersonalAccessToken::findToken($tokenString);
+            //return $token->tokenable->id;
+            //if($token && $token->estado=='ACTIVO' && $token->fechalimite >= date('Y-m-d'))
+        $user=User::where('id',$token->tokenable->id)
+                    ->where('estado','ACTIVO')
                     ->whereDate('fechalimite','>=',date('Y-m-d'))
                     ->firstOrFail();
                 return $user;

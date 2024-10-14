@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
             $table->date('fecha');
+            $table->time('hora');
             $table->integer('numero');
+            $table->double('monto');
             $table->string('estado')->default('ACTIVO');
             $table->unsignedBigInteger('servicio_id');
             $table->foreign('servicio_id')->references('id')->on('servicios');

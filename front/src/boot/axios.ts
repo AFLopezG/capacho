@@ -25,7 +25,7 @@ export default boot(({ app,router }) => {
   const token = localStorage.getItem('tokenCapacho')
   if (token) {
     api.defaults.headers.common.Authorization = `Bearer ${token}`
-    api.post('me').then((response) => {
+    api.post('me/'+token).then((response) => {
       console.log(response.data)
       globalStore().user = response.data
       globalStore().isLoggedIn = true

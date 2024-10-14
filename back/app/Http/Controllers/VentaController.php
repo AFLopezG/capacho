@@ -30,15 +30,19 @@ class VentaController extends Controller
     public function store(StoreVentaRequest $request)
     {
         //
+        if($request->cantidad<1){
+            return false;
+        }
+        
         $salida=[];
         $mes=date('m');
         $anio=date('Y');
-        $datos=Venta::where('servicio_id',$request->id)->whereMonth('fecha',$mes)->whereYear('fecha',$anio)->count();
+        $datos=Venta::where('servicio_id',$request->id)->whereYear('fecha',$anio)->count();
         if($datos==0)
             $numero=1;
         else
         {
-            $datos=Venta::where('servicio_id',$request->id)->whereMonth('fecha',$mes)->whereYear('fecha',$anio)->orderBy('id','desc')->first();
+            $datos=Venta::where('servicio_id',$request->id)->whereYear('fecha',$anio)->orderBy('id','desc')->first();
             $numero=$datos->numero + 1 ;
         }
 
@@ -46,7 +50,9 @@ class VentaController extends Controller
             # code...
             $venta=new Venta();
             $venta->fecha=date('Y-m-d');
+            $venta->hora=date('H:i:s');
             $venta->numero=$numero;
+            $venta->monto=$request->monto;
             $venta->servicio_id=$request->id;
             $venta->user_id=$request->user()->id;
             $venta->save();
