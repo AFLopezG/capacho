@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::apiResource('servicio', App\Http\Controllers\ServicioController::class);
     Route::post('/listServicio',[\App\Http\Controllers\ServicioController::class,'listServicio']);
+    Route::post('/reporte/{fecha}',[\App\Http\Controllers\VentaController::class,'reporte']);
     Route::apiResource('venta', App\Http\Controllers\VentaController::class);
     
 

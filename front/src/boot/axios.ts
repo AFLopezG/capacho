@@ -29,7 +29,6 @@ export default boot(({ app,router }) => {
       console.log(response.data)
       globalStore().user = response.data
       globalStore().isLoggedIn = true
-
     }).catch(() => {
       app.config.globalProperties.$api.defaults.headers.common['Authorization']=''
       globalStore().user={}

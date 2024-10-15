@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
-
+use Carbon\Carbon;
 class UserController extends Controller
 {
     //
@@ -112,11 +112,23 @@ class UserController extends Controller
         $token = PersonalAccessToken::findToken($tokenString);
             //return $token->tokenable->id;
             //if($token && $token->estado=='ACTIVO' && $token->fechalimite >= date('Y-m-d'))
+            if ($token && $this->isTokenExpired($token)) {
+                return false;
+            }
         $user=User::where('id',$token->tokenable->id)
                     ->where('estado','ACTIVO')
                     ->whereDate('fechalimite','>=',date('Y-m-d'))
                     ->firstOrFail();
                 return $user;
+    }
+
+    protected function isTokenExpired($token)
+    {
+        // Verificar la expiración basado en la configuración de Sanctum
+        $expiration = $token->created_at->addMinutes(config('sanctum.expiration'));
+
+        // Devolver true si la fecha actual es mayor que la fecha de expiración
+        return Carbon::now()->greaterThan($expiration);
     }
 
     public function logout(Request $request)

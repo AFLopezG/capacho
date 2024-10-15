@@ -10,12 +10,22 @@
           aria-label="Menu"
           @click="leftDrawerOpen=!leftDrawerOpen" 
         />
-
         <q-toolbar-title>
-          Quasar App
+          <div class="row">
+            <div class=""><img src="img/logo.png" style="height: 40px; width: 40px;" /></div>
+            <span style="font-size: 14px;">BALNEARIO DE CAPACHOS<br>ORURO</span>
+          </div>
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>{{ store.user.nombre }}            
+          <q-btn
+            flat
+            dense
+            round
+            icon="logout"
+            aria-label="Logout"
+            @click="logout"
+          /></div>
       </q-toolbar>
     </q-header>
 
@@ -23,13 +33,21 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      :width="250"
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
+    <q-list bordered class="rounded-borders">
+          <q-item-label header class="text-center text-bold bg-blue-8 text-white">
+          Opciones
         </q-item-label>
+        <q-item clickable dense to="/" exact active-class="bg-primary text-white">
+          <q-item-section avatar><q-icon name="home" /></q-item-section>
+          <q-item-section><q-item-label>PRINCIPAL</q-item-label><q-item-label caption class="text-grey-2"></q-item-label></q-item-section>
+      </q-item>
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="people" label="USUARIO" to="/usuarios" expand-icon="null" v-if="store.booluser"/>
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="settings" label="SERVICIOS" to="/servicio" expand-icon="null" />
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="hot_tub" label="TICKETS" to="/venta" expand-icon="null" />
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="summarize" label="REPORTE" to="/reporte" expand-icon="null" />
+     
 
 
       </q-list>
