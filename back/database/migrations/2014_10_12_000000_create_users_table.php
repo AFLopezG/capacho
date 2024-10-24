@@ -17,9 +17,12 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->string('estado')->default('ACTIVO');
+            $table->string('rol')->default('CAJERO');
             $table->date('fechalimite');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->unsignedBigInteger('unit_id')->nullable();
+            $table->foreign('unit_id')->references('id')->on('units');
             $table->rememberToken();
             $table->timestamps();
         });

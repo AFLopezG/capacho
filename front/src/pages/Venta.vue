@@ -15,7 +15,7 @@
         <div id="myelement" class="hidden"></div>
     </div>
   </template>
-  
+
   <script>
       import { Printd } from 'printd'
 import QRCode from 'qrcode'
@@ -59,7 +59,30 @@ import QRCode from 'qrcode'
         '\nValido: '+ticket.servicio.nombre+
         '\nMonto: '+ticket.monto+' Bs'
         this.imgqr= await QRCode.toDataURL(qr,this.opts)
+        let cadparrilla=''
+        if(ticket.servicio.nombre=='USO PARRILLERO'){
+            cadparrilla=`<div>
+              <table class='tab5'>
+                <tr><td colspan=2>Usuario</td></tr>
+                <tr><td style='width:50%'>H. Inicio</td><td>H. Fin</td></tr>
+              </table>
+            </div>`}
         let cadena=`<style>
+        .tab5{
+        width:100%;
+        font-size:8px;
+        border-collapse: collapse;
+        }
+        .tab5 tr{
+        height:20px;
+        }
+        .tab5 td{
+        font-weight: bold;
+          border: 0.2px solid;
+          border-radius: 25px;
+          vertical-align: top;
+          text-align: left;
+        }
 .ticket-container {
     width: 100%; /* adjust width as needed */
     margin: 2px auto;
@@ -127,12 +150,12 @@ import QRCode from 'qrcode'
         font-size:10px;
          font-style: oblique;
          text-align:center;
-        }    
+        }
         </style>
         <div class="ticket-container">
         <table><tr><td><img src="img/escudo.jpg" alt="Logo Gobierno Autonomo de Oruro" class="logo"></td><td> <h1 class="title">BALNEARIO DE CAPACHOS</h1></td></tr></table>
-        
-               
+
+
         <div class="ticket-info">
             <div style='text-align:center;font-size:18px'>Ticket No.: <span class="ticket-number">`+ticket.numero+`</span></div>
             <div style='text-align:center;font-size:10px'><b>Fecha:</b><span>`+ticket.fecha +' '+ticket.hora +`</span></div>
@@ -147,12 +170,13 @@ import QRCode from 'qrcode'
               </td>
             </tr>
           </table>
+          `+ cadparrilla+`
           <div class='textpie'>Orureños trabajando para orureños</div>
         </div>
      </div>`
         document.getElementById('myelement').innerHTML = cadena
             const d = new Printd()
-            d.print( document.getElementById('myelement') ) 
+            d.print( document.getElementById('myelement') )
 
       }
     },
@@ -177,9 +201,9 @@ import QRCode from 'qrcode'
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;    
+    cursor: pointer;
   }
-  
+
   .card-container img {
     width: 100%;
     height: 100px;
@@ -187,26 +211,26 @@ import QRCode from 'qrcode'
     border-radius: 10px 10px 0 0;
     margin-bottom: 0; /* Agrega este estilo */
   }
-  
+
   .card-container .card-body {
     padding: 5px;
     margin-top: 0; /* Agrega este estilo */
   }
-  
+
   .card-container .card-title {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 1px;
   }
-  
+
   .card-container .card-text {
     font-size: 14px;
     color: #666;
   }
-  
+
   .row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-  
+
   }</style>

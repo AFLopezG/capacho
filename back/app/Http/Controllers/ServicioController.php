@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Servicio;
 use App\Http\Requests\StoreServicioRequest;
 use App\Http\Requests\UpdateServicioRequest;
+use Illuminate\Http\Request;
+use Intervention\Image\ImageManager;
 
 class ServicioController extends Controller
 {
@@ -14,11 +16,11 @@ class ServicioController extends Controller
     public function index()
     {
         //
-        return Servicio::all();
+        return Servicio::with('unit')->get();
     }
 
-    public function listServicio(){
-        return Servicio::where('estado','ACTIVO')->get();
+    public function listServicio(Request $request){
+        return Servicio::with('unit')->where('unit_id',$request->user()->unit_id)->where('estado','ACTIVO')->get();
     }
 
     /**
@@ -35,8 +37,14 @@ class ServicioController extends Controller
     public function store(StoreServicioRequest $request)
     {
         //
-  
-        
+        $servicio=new Servicio();
+        $servicio->item=$request->item;
+        $servicio->subitem=$request->subitem;
+        $servicio->nombre=strtoupper($request->nombre);
+        $servicio->monto=$request->monto;
+        $servicio->unit_id=$request->unit_id;
+        $servicio->save();
+
     }
 
     /**
@@ -61,6 +69,42 @@ class ServicioController extends Controller
     public function update(UpdateServicioRequest $request, Servicio $servicio)
     {
         //
+        $servicio=Servicio::find($request->id);
+        $servicio->item=$request->item;
+        $servicio->subitem=$request->subitem;
+        $servicio->nombre=strtoupper($request->nombre);
+        $servicio->monto=$request->monto;
+        $servicio->unit_id=$request->unit_id;
+        $servicio->save();
+    }
+
+    public function servEstado(Request $request){
+        $servicio=Servicio::find($request->id);
+        if($servicio->estado=='ACTIVO')
+            $servicio->estado='INACTIVO';
+        else
+            $servicio->estado='ACTIVO';
+        $servicio->save();
+
+    }
+
+    public function uploadImg(Request $request){
+        $this->validate($request, [
+            'file'=>'required',
+            'id'=>'required'
+        ]);
+            if ($request->hasFile('file')){
+                $file    = $request->file('file');
+                $nombre  = $request->id.".".$file->getClientOriginalExtension();
+                $image = ImageManager::imagick()->read($file->getRealPath());
+                $image->scale(600, 600);
+                $image->save(public_path('/imagen/'.$nombre));
+            }
+            //return $nombre;
+
+            $servicio=Servicio::find($request->id);
+            $servicio->imagen=$nombre;
+            $servicio->save();
     }
 
     /**

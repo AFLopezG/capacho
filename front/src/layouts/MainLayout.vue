@@ -8,7 +8,7 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="leftDrawerOpen=!leftDrawerOpen" 
+          @click="leftDrawerOpen=!leftDrawerOpen"
         />
         <q-toolbar-title>
           <div class="row">
@@ -17,7 +17,7 @@
           </div>
         </q-toolbar-title>
 
-        <div>{{ store.user.nombre }}            
+        <div>{{ store.user.nombre }}
           <q-btn
             flat
             dense
@@ -43,11 +43,12 @@
           <q-item-section avatar><q-icon name="home" /></q-item-section>
           <q-item-section><q-item-label>PRINCIPAL</q-item-label><q-item-label caption class="text-grey-2"></q-item-label></q-item-section>
       </q-item>
-      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="people" label="USUARIO" to="/usuarios" expand-icon="null" v-if="store.booluser"/>
-      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="settings" label="SERVICIOS" to="/servicio" expand-icon="null" />
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="business" label="UNIDAD" to="/unidades" expand-icon="null" v-if="store.user.rol=='ADMIN'"/>
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="people" label="USUARIO" to="/usuarios" expand-icon="null" v-if="store.user.rol=='ADMIN'"/>
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="settings" label="SERVICIOS" to="/servicio" expand-icon="null" v-if="store.user.rol=='ADMIN'" />
       <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="hot_tub" label="TICKETS" to="/venta" expand-icon="null" />
       <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="summarize" label="REPORTE" to="/reporte" expand-icon="null" />
-     
+
 
 
       </q-list>
@@ -77,7 +78,8 @@ export default defineComponent({
     this.$router.push('/login')
 
   },
-  logout () {
+  methods:{
+  logout() {
       this.$q.dialog({
         title: 'Cerrar sesión',
         message: '¿Está seguro que desea cerrar sesión?',
@@ -95,9 +97,9 @@ export default defineComponent({
           globalStore().booluser = false
         })
       })
-    
+
     },
 
-
+  }
   });
 </script>

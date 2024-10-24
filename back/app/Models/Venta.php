@@ -9,13 +9,16 @@ class Venta extends Model
 {
     use HasFactory;
     protected $fillable = [
-    'fecha',
-    'numero',
-    'servicio_id',
-    'user_id',
+        'fecha',
+        'hora',
+        'numero',
+        'monto',
+        'estado',
+        'servicio_id',
+        'user_id',
     ];
 
-    public function servicio(){
-        return $this->belongsTo(Servicio::class);
-    }
+public function servicio(){
+    return $this->belongsTo(Servicio::class)->with('unit');
+}
 }

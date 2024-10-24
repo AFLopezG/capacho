@@ -13,13 +13,13 @@ class UserController extends Controller
     public function index()
     {
         //
-        return User::where('id','<>',1)->get();
+        return User::with('unit')->where('id','<>',1)->get();
     }
 
     public function listUser($id)
     {
         //
-        return User::select('id','nombre')->where('state','ACTIVO')->get();
+        return User::select('id','nombre')->where('estado','ACTIVO')->get();
     }
 
     /**
@@ -33,9 +33,10 @@ class UserController extends Controller
             'name' => 'required|unique:users',
             'email' => 'required|email',
             'password' => 'required',
+            'rol' => 'required',
             'fechalimite' => 'required'
         ]);
-        
+
         $validated['password']=Hash::make($validated['password']);
         $user = User::create($validated);
 
@@ -59,10 +60,11 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required',
             'nombre' => 'required',
+            'rol' => 'required',
             'email' => 'required|email',
             'fechalimite' => 'required',
         ]);
-        
+
         $user = User::find($request->id);
         $user->update($validated);
         return response(['user' => $user]);
@@ -107,15 +109,16 @@ class UserController extends Controller
         }
     }
 
-    public function me($tokenString)
+    public function me(Request $request)
     {
-        $token = PersonalAccessToken::findToken($tokenString);
+        /*$token = PersonalAccessToken::findToken($tokenString);
             //return $token->tokenable->id;
             //if($token && $token->estado=='ACTIVO' && $token->fechalimite >= date('Y-m-d'))
-            if ($token && $this->isTokenExpired($token)) {
-                return false;
-            }
-        $user=User::where('id',$token->tokenable->id)
+            if ($token && !$this->isTokenExpired($token)) {
+                $user=User::find($token->tokenable->id);
+                $user->tokens()->delete();
+            }*/
+        $user=User::where('id',$request->user()->id)
                     ->where('estado','ACTIVO')
                     ->whereDate('fechalimite','>=',date('Y-m-d'))
                     ->firstOrFail();
@@ -133,16 +136,18 @@ class UserController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $user=User::find($request->user()->id);
+        $user->tokens()->delete();
+        //$request->user()->tokens()->delete();
         return response(['message' => 'Sesión cerrada']);
     }
 
     public function cambioEstado($id){
         $user=User::find($id);
-        if($user->state=='ACTIVO')
-            $user->state='INACTIVO';
+        if($user->estado=='ACTIVO')
+            $user->estado='INACTIVO';
         else
-            $user->state='ACTIVO';
+            $user->estado='ACTIVO';
         $user->save();
     }
 

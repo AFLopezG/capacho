@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('login', [App\Http\Controllers\UserController::class, 'login']);
-Route::post('me/{token}', [App\Http\Controllers\UserController::class, 'me']);
 Route::post('logout', [App\Http\Controllers\UserController::class, 'logout']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //return $request->user();
 
 
-    Route::apiResource('user', App\Http\Controllers\UserController::class);
+Route::post('me', [App\Http\Controllers\UserController::class, 'me']);
+Route::apiResource('user', App\Http\Controllers\UserController::class);
     Route::put('/updatePassword/{user}',[\App\Http\Controllers\UserController::class,'updatePassword']);
     Route::post('/cambioEstado/{id}',[\App\Http\Controllers\UserController::class,'cambioEstado']);
 
@@ -30,7 +30,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/listServicio',[\App\Http\Controllers\ServicioController::class,'listServicio']);
     Route::post('/reporte/{fecha}',[\App\Http\Controllers\VentaController::class,'reporte']);
     Route::apiResource('venta', App\Http\Controllers\VentaController::class);
-    
+    Route::apiResource('unit', App\Http\Controllers\UnitController::class);
+    Route::post('/servEstado/{id}',[\App\Http\Controllers\ServicioController::class,'servEstado']);
+    Route::post('/uploadImg',[\App\Http\Controllers\ServicioController::class,'uploadImg']);
+
+
+
 
 });
 

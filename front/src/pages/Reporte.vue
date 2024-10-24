@@ -46,7 +46,7 @@
             let tcant=0
             let ttotal=0
             this.datos.forEach(r => {
-                contenido+='<tr><td>'+r.nombre+'</td><td>'+r.primero+'</td><td>'+r.ultimo+'</td><td>'+r.cantidad+'</td><td>'+r.subtotal+'</td></tr>'
+                contenido+='<tr><td>'+r.nombre+'</td><td>'+r.primero+' - '+r.ultimo+'</td><td style="text-align:center;">'+r.cantidad+'</td><td style="text-align:right;">'+(parseFloat(r.subtotal)).toFixed(2)+'</td></tr>'
                 tcant+= parseInt(r.cantidad)
                 ttotal+=parseFloat(r.subtotal)
             });
@@ -60,8 +60,7 @@
 
 .container {
   width: 100%;
-  margin: 40px auto;
-  padding: 20px;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -118,15 +117,14 @@ tfoot th[colspan="3"] {
       <p>Fecha: <span>`+this.fec+`</span></p>
                 </td></tr>
     </table>
-      
+
 
     </div>
     <table class='table1'>
       <thead>
-        <tr>
+        <tr style="text-align:center;">
           <th>SERVICIO</th>
-          <th>PRIMERO</th>
-          <th>ULTIMO</th>
+          <th>RANGO</th>
           <th>CANTIDAD</th>
           <th>SUBTOTAL</th>
         </tr>
@@ -136,9 +134,9 @@ tfoot th[colspan="3"] {
       </tbody>
       <tfoot>
         <tr>
-          <th colspan="3">Totales:</th>
-          <th >`+tcant+`</th>
-          <th >`+ttotal+`</th>
+          <th colspan="2">Totales:</th>
+          <th style="text-align:center;">`+tcant+`</th>
+          <th style="text-align:right;">`+ttotal.toFixed(2)+` Bs</th>
         </tr>
       </tfoot>
     </table>
@@ -146,7 +144,7 @@ tfoot th[colspan="3"] {
   </div>`
             document.getElementById('myelement').innerHTML = cadena
             const d = new Printd()
-            d.print( document.getElementById('myelement') ) 
+            d.print( document.getElementById('myelement') )
         }
     }
 }
