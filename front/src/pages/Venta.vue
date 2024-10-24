@@ -54,7 +54,8 @@ import QRCode from 'qrcode'
       },
 
       async imprimir(ticket){
-        let qr='ticket : '+ticket.numero+
+        let qr='Unid: '+ticket.servicio.unit.nombre+
+        '\nTicket : '+ticket.numero+
         '\nFecha: '+ticket.fecha+' '+ticket.hora+
         '\nValido: '+ticket.servicio.nombre+
         '\nMonto: '+ticket.monto+' Bs'
@@ -153,7 +154,7 @@ import QRCode from 'qrcode'
         }
         </style>
         <div class="ticket-container">
-        <table><tr><td><img src="img/escudo.jpg" alt="Logo Gobierno Autonomo de Oruro" class="logo"></td><td> <h1 class="title">BALNEARIO DE CAPACHOS</h1></td></tr></table>
+        <table><tr><td><img src="img/escudo.jpg" alt="Logo Gobierno Autonomo de Oruro" class="logo"></td><td> <h1 class="title">`+ticket.servicio.unit.nombre+`</h1></td></tr></table>
 
 
         <div class="ticket-info">
@@ -181,8 +182,8 @@ import QRCode from 'qrcode'
       }
     },
     mounted() {
-        this.$api.post('listServicio')
-        .then(response => {
+        this.$api.post('listServicio').then(response => {
+          console.log(response.data)
           this.servicios = response.data
         })
         .catch(error => {

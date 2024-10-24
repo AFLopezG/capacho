@@ -20,6 +20,7 @@ class ServicioController extends Controller
     }
 
     public function listServicio(Request $request){
+        //return $request->user();
         return Servicio::with('unit')->where('unit_id',$request->user()->unit_id)->where('estado','ACTIVO')->get();
     }
 

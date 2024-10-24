@@ -18,7 +18,7 @@ class Servicio extends Model
         'unit_id',
         ];
 
-    public function servicio(){
-        return $this->belongsTo(Servicio::class)->with('unit');
+    public function unit(){
+        return $this->belongsTo(Unit::class);
     }
 }
