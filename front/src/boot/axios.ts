@@ -28,10 +28,12 @@ export default boot(({ app,router }) => {
     api.post('me').then((response) => {
       console.log(response.data)
       globalStore().user = response.data
+      globalStore().unit = response.data.unit
       globalStore().isLoggedIn = true
     }).catch(() => {
       app.config.globalProperties.$api.defaults.headers.common['Authorization']=''
       globalStore().user={}
+      globalStore().unit={}
       localStorage.removeItem('tokenCapacho')
       globalStore().isLoggedIn=false
       globalStore().booluser=false
@@ -41,7 +43,8 @@ export default boot(({ app,router }) => {
     router.push('/login')
     globalStore().user={}
     globalStore().isLoggedIn=false
-    globalStore().booluser=false
+      globalStore().unit={}
+      globalStore().booluser=false
       localStorage.removeItem('tokenCapacho')
     globalStore().isLoggedIn=false
   }

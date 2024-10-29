@@ -10,8 +10,11 @@
 
     <q-dialog v-model="alert" full-width>
       <q-card >
-        <q-card-section class="bg-green-14 text-white">
+        <q-card-section class="bg-green-14 text-white" v-if="dato.id==undefined">
           <div class="text-h7"><q-icon name="add_circle" /> REGISTRO DE NUEVO USUARIO</div>
+        </q-card-section>
+        <q-card-section class="bg-yellow-14 text-white" v-else>
+          <div class="text-h7"><q-icon name="add_circle" /> MODIFICAR USUARIO</div>
         </q-card-section>
         <q-card-section class="q-pt-xs">
           <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
@@ -19,7 +22,7 @@
               <div class="col-12"><q-input outlined v-model="dato.nombre"   type="text" label="Nombre " hint="Ingresar Nombre" dense lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']"/></div>
               <div class="col-12"><q-input outlined dense v-model="dato.email" type="email" label="Email" hint="Correo electronico" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" /></div>
               <div class="col-12"><q-input outlined dense v-model="dato.name" label="Cuenta" hint="Cuenta" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" /></div>
-              <div class="col-12"><q-input outlined dense v-model="dato.password" label="Contraseña" hint="Contraseña" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" :type="typePassword?'password':'text'">
+              <div class="col-12" v-if="dato.id==undefined"><q-input outlined dense v-model="dato.password" label="Contraseña" hint="Contraseña" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" :type="typePassword?'password':'text'">
                 <template v-slot:append>
                           <q-icon @click="typePassword=!typePassword" :name="typePassword?'visibility':'visibility_off'" />
                 </template>
@@ -32,7 +35,8 @@
               </div>
 
             <div>
-              <q-btn label="Crear" type="submit" color="positive" icon="add_circle" />
+              <q-btn label="REGISTRAR" type="submit" color="green" icon="add_circle" v-if="dato.id==undefined"/>
+              <q-btn label="MODIFICAR" type="submit" color="yellow" icon="edit"  v-else/>
               <q-btn label="Cancelar" icon="delete" color="negative" v-close-popup />
             </div>
           </q-form>
@@ -65,25 +69,6 @@
       </template>
     </q-table>
 
-    <q-dialog v-model="dialog_mod">
-      <q-card style="max-width: 80%; width: 50%">
-        <q-card-section class="bg-warning text-white">
-          <div class="text-h7"> <q-icon name="edit"/> MODIFICAR DATOS DE USUARIO</div>
-        </q-card-section>
-        <q-card-section class="q-pt-xs">
-          <q-form @submit="onMod" class="q-gutter-md">
-            <q-input outlined dense v-model="dato2.nombre" type="text" label="Nombre "  hint="Ingresar Nombre" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" />
-            <q-input outlined dense v-model="dato2.name" type="text" label="Cuenta "  hint="Ingresar cuenta" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" />
-            <q-input outlined dense v-model="dato2.email" type="text" label="Correo "  hint="Ingresar Correo" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" />
-            <q-input outlined  dense v-model="dato2.fechalimite" type="date" label="Fecha Limite" lazy-rules :rules="[(val) => val.length > 0 || 'Por favor ingresa datos']" />
-            <div>
-              <q-btn label="Modificar" type="submit" color="positive" icon="add_circle" />
-              <q-btn label="Cancelar" icon="delete" color="negative" v-close-popup />
-            </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
 
     <q-dialog v-model="dialog_del">
       <q-card>
@@ -122,7 +107,6 @@ export default {
       filter: '',
       dato: { rol:'CAJERO',fechalimite: (moment(this.fecha).add(36, 'months').format('YYYY-MM-DD')) },
       model: '',
-      dato2: {},
       options: [],
       props: [],
       unidades: [],
@@ -171,28 +155,21 @@ export default {
       })
     },
     editRow (item) {
-      this.dato2 = item.row
-      this.unidad=this.dato2.unit
-      this.dialog_mod = true
+      this.dato = item.row
+      this.unidad=this.dato.unit
+      this.alert = true
     },
     deleteRow (item) {
-      this.dato2 = item.row
+      this.dato = item.row
       this.dialog_del = true
     },
     onSubmit () {
       if(this.unidad.id==undefined)
         return false
-
+      this.dato.unit_id=this.unidad.id
       this.$q.loading.show()
-      this.$api.post('user', {
-        name: this.dato.name,
-        nombre: this.dato.nombre,
-        password: this.dato.password,
-        email: this.dato.email,
-        fechalimite: this.dato.fechalimite,
-        rol: this.dato.rol,
-        unit_id: this.unidad.id
-      }).then(() => {
+      if(this.dato.id==undefined){
+      this.$api.post('user', this.dato).then(() => {
         // console.log(res.data)
         this.$q.notify({
           color: 'green-4',
@@ -209,29 +186,24 @@ export default {
           message: err.response.data.message,
           icon: 'close',
           color: 'red'
+        })})
+        this.$q.loading.hide()      
+      }
+        else{
+          this.$api.put('user/'+this.dato.id, this.dato).then(() => {
+          this.dato = {rol:'CAJERO', fechalimite: (moment(this.fecha).add(12, 'months').format('YYYY-MM-DD')) }
+        this.alert = false
+        this.misdatos()
         })
         this.$q.loading.hide()
-      })
+
+        }
+      
     },
-    onMod () {
-      if(this.unidad.id==undefined)
-        return false
-      this.datos2.unit_id=this.unidad.id
-      this.$q.loading.show()
-      this.$api.put('user/' + this.dato2.id, this.dato2).then(() => {
-        this.$q.notify({
-          color: 'green-4',
-          textColor: 'white',
-          icon: 'cloud_done',
-          message: 'Modificado correctamente'
-        })
-        this.dialog_mod = false
-        this.misdatos()
-      })
-    },
+
     onDel () {
       this.$q.loading.show()
-      this.$api.delete('user/' + this.dato2.id)
+      this.$api.delete('user/' + this.dato.id)
         .then(() => {
           this.$q.notify({
             color: 'green-4',

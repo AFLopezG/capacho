@@ -60,6 +60,7 @@ import {globalStore} from 'stores/globalStore'
           })
           console.log(res.data)
           this.store.user = res.data.user
+          this.store.unit = res.data.user.unit
           this.store.isLoggedIn = true
           this.$api.defaults.headers.common.Authorization = 'Bearer ' + res.data.token
           localStorage.setItem('tokenCapacho', res.data.token)

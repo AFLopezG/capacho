@@ -6,6 +6,7 @@ use App\Models\Venta;
 use App\Http\Requests\StoreVentaRequest;
 use App\Http\Requests\UpdateVentaRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class VentaController extends Controller
 {
@@ -66,9 +67,10 @@ class VentaController extends Controller
 
     }
 
-    public function reporte($fecha){
+    public function reporte(Request $request ){
         return DB::SELECT("select s.nombre,count(*) cantidad,sum(v.monto) subtotal,min(v.numero) primero,max(v.numero) ultimo 
-        from ventas v inner join servicios s on v.servicio_id=s.id  where date(v.fecha)='$fecha' and v.monto > 0 group by s.nombre");
+        from ventas v inner join servicios s on v.servicio_id=s.id  
+        where date(v.fecha)='$request->fecha' and s.unit_id=".$request->user()->unit_id." and v.monto > 0  group by s.nombre");
     }
 
     /**

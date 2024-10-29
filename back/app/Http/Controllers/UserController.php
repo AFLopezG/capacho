@@ -98,7 +98,7 @@ class UserController extends Controller
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $user->tokens()->delete();
-                $user = User::where('name',$request->name)->first();
+                $user = User::where('name',$request->name)->with('unit')->first();
                 $token = $user->createToken('authToken')->plainTextToken;
                 return response(['user' => $user, 'token' => $token]);
             } else {
@@ -118,7 +118,7 @@ class UserController extends Controller
                 $user=User::find($token->tokenable->id);
                 $user->tokens()->delete();
             }*/
-        $user=User::where('id',$request->user()->id)
+        $user=User::with('unit')->where('id',$request->user()->id)
                     ->where('estado','ACTIVO')
                     ->whereDate('fechalimite','>=',date('Y-m-d'))
                     ->firstOrFail();

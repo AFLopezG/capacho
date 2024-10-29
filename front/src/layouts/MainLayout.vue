@@ -13,7 +13,7 @@
         <q-toolbar-title>
           <div class="row">
             <div class=""><img src="img/logo.png" style="height: 40px; width: 40px;" /></div>
-            <span style="font-size: 14px;">BALNEARIO DE CAPACHOS<br>ORURO</span>
+            <span style="font-size: 14px;">{{store.unit.nombre}}<br>ORURO</span>
           </div>
         </q-toolbar-title>
 
@@ -89,6 +89,7 @@ export default defineComponent({
         this.$q.loading.show()
         this.$api.post('logout').then(() => {
           globalStore().user = {}
+          globalStore().unit = {}
           localStorage.removeItem('tokenCapacho')
           globalStore().isLoggedIn = false
           this.$router.push('/login')

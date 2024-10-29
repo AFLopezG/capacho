@@ -33,7 +33,7 @@
             this.datos=[]
             if(this.fecha==undefined)
                 return false
-            this.$api.post('reporte/'+ this.fecha).then(res => {
+            this.$api.post('reporte/',{fecha:this.fecha}).then(res => {
                 this.fec=this.fecha
                 console.log(res.data)
                 this.datos=res.data
